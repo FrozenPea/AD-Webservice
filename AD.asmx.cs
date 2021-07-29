@@ -179,6 +179,44 @@ namespace Frontend
 
         }
 
+
+        [WebMethod]
+
+        public string GetComputerName(String SerialNumber)
+        {
+            string sGetComputerName;
+
+            Trace.WriteLine(DateTime.Now + ": GetComputerName: Serial number is " + SerialNumber);
+
+            if (SerialNumber.Length == 0)
+            {
+
+                Trace.WriteLine(DateTime.Now + ": GetComputerName: Serial number empty!");
+
+                return "ERROR";
+
+            }
+
+
+            //Remove NetBIOS disallowed characters
+            sGetComputerName = Regex.Replace(SerialNumber, @"(^\.)|([^a-zA-Z0-9\.-])", "", RegexOptions.None);
+
+            Trace.WriteLine(DateTime.Now + ": GetComputerName: Removed illegal characters " + sGetComputerName);
+
+            if (sGetComputerName.Length > 15)
+            {
+                sGetComputerName = sGetComputerName.Substring(0, 15);
+
+                Trace.WriteLine(DateTime.Now + ": GetComputerName: Limited to 15 characters " + sGetComputerName);
+
+            }
+
+            Trace.WriteLine(DateTime.Now + ": GetComputerName: Calculated computer name is " + sGetComputerName);
+
+            return sGetComputerName;
+
+        }
+
         #endregion
     }
 }
