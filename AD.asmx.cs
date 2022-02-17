@@ -18,48 +18,23 @@ namespace Frontend
     // [System.Web.Script.Services.ScriptService]
     public class ConfigMgr : System.Web.Services.WebService
     {
-        #region Instance variables
-        
-        String FQDNDomainName;
-       
-        #endregion
-
-
-        #region Constructor
- 
-        public ConfigMgr()
-        {
-
-            // Read the Frontend parameters from web.config
-            Trace.WriteLine(DateTime.Now + ": ConfigMgr: Read the Frontend parameters from web.config");
-            
-            Configuration webConfig = WebConfigurationManager.OpenWebConfiguration(null);
- 
-            FQDNDomainName = WebConfigurationManager.AppSettings["FQDNDomainName"];
-            Trace.WriteLine(DateTime.Now + ": ConfigMgr: FQDNDomainName value from web.config is: " + FQDNDomainName);
-
-        }
-
-
-        #endregion
-
 
         #region Web methods
 
         [WebMethod]
-        public Boolean AddComputerToGroup(String ADGroupName, String OSDComputerName)
+        public Boolean AddComputerToGroup(String ADGroupName, String OSDComputerName, String DomainController)
         {
 
             Trace.WriteLine(DateTime.Now + ": AddComputerToGroup: Starting Web Service");
             Trace.WriteLine(DateTime.Now + ": AddComputerToGroup: ADGroupName received was: " + ADGroupName);
             Trace.WriteLine(DateTime.Now + ": AddComputerToGroup: OSDComputerName received was: " + OSDComputerName);
-            Trace.WriteLine(DateTime.Now + ": AddComputerToGroup: Connecting to " + FQDNDomainName + ".");
+            Trace.WriteLine(DateTime.Now + ": AddComputerToGroup: DomainController received was: " + DomainController);
 
             try
             {
 
                 // Connect to Active Directory
-                PrincipalContext AD = new PrincipalContext(ContextType.Domain, FQDNDomainName);
+                PrincipalContext AD = new PrincipalContext(ContextType.Domain, DomainController);
 
                 string controller = AD.ConnectedServer;
                 Trace.WriteLine(DateTime.Now + ": AddComputerToGroup: Connected to " + string.Format("Domain Controller: {0}", controller));
@@ -113,21 +88,22 @@ namespace Frontend
         }
 
         [WebMethod]
-        public Boolean MoveComputerToOU(String MACHINEOBJECTOU, String OSDComputerName)
+        public Boolean MoveComputerToOU(String MACHINEOBJECTOU, String OSDComputerName, String DomainController)
         {
 
             Trace.WriteLine(DateTime.Now + ": MoveComputerToOU: Starting Web Service");
             Trace.WriteLine(DateTime.Now + ": MoveComputerToOU: MACHINEOBJECTOU received was: " + MACHINEOBJECTOU);
             Trace.WriteLine(DateTime.Now + ": MoveComputerToOU: OSDComputerName received was: " + OSDComputerName);
+            Trace.WriteLine(DateTime.Now + ": MoveComputerToOU: DomainController received was: " + DomainController);
 
             String CurrentOU = string.Empty;
-            Trace.WriteLine(DateTime.Now + ": MoveComputerToOU: Connecting to " + FQDNDomainName + ".");
+            Trace.WriteLine(DateTime.Now + ": MoveComputerToOU: Connecting to " + DomainController + ".");
 
             try
             {
 
                 // Connect to AD
-                PrincipalContext AD = new PrincipalContext(ContextType.Domain, FQDNDomainName);
+                PrincipalContext AD = new PrincipalContext(ContextType.Domain, DomainController);
 
                 string controller = AD.ConnectedServer;
                 Trace.WriteLine(DateTime.Now + ": MoveComputerToOU: Connected to " + string.Format("Domain Controller: {0}", controller));
